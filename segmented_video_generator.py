@@ -74,7 +74,8 @@ class SegmentatedVideoGenerator:
                     
             self.frames_upd.append(image)
             
-            return self.frames_upd, fps
+        
+        return self.frames_upd, fps
 
 
     
