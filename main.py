@@ -3,8 +3,7 @@ from config import court_marker_config, default_config, det_model_config
 from io_utils import write_video
 
 
-# Setup MediaPipe (Global) | We initialize these once and pass them around
-
+# Initialize the video segmentor.
 seg = SegmentatedVideoGenerator(
     court_marker_model_path=court_marker_config.model_path, 
     player_ball_model_path=det_model_config.player_and_ball_model_path,
@@ -14,10 +13,6 @@ seg = SegmentatedVideoGenerator(
     det_model_config=det_model_config
 )
 
-
-
+# Segment the video and write it to folder.
 modified_frames, fps = seg.generate("data/tennis_play_record_1_short_v2.mp4")
-
-
-print("Writing")
 write_video(modified_frames, fps, "data/segmented_video.avi")
