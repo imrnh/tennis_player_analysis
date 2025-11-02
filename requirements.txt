@@ -1,2 +1,4 @@
 mediapipe
 ultralytics
+opencv-python
+tqdm

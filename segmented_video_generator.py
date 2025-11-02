@@ -59,7 +59,6 @@ class SegmentatedVideoGenerator:
 
     def generate(self, input_path):
         frames, fps = read_video(input_path)
-        print("Frame count:", len(frames), "\t fps:", fps)
         self.frames_upd = []
         for image in tqdm(frames):
             image = cv2.resize(image, (default_config.PREPROCESSOR_WIDTH, default_config.PREPROCESSOR_HEIGHT))
@@ -93,12 +92,8 @@ class SegmentatedVideoGenerator:
 
 
             # Predict Player, Ball and Net Detection
-            player_ball_results = self.player_ball_model(image)
-            net_results = self.net_model(image)
-
-            # Extract predictions
-            player_ball_preds = player_ball_results.xyxy[0].cpu().numpy()
-            net_preds = net_results.xyxy[0].cpu().numpy()
+            player_ball_results_list = self.player_ball_model(image, verbose=False)
+            net_results_list = self.net_model(image, verbose=False)
 
 
 
@@ -108,18 +103,30 @@ class SegmentatedVideoGenerator:
             net_boxes = []
 
             # a. Parse Player/Ball results
-            for *box, conf, cls in player_ball_preds:
+            # Get the first (and only) result object from the list as we are operating for each image separately. 
+            player_results = player_ball_results_list[0] 
+            
+            # Iterate over the .boxes attribute
+            for box in player_results.boxes:
+                conf = box.conf.item()  # Confidence score
                 if conf > self.CONF_THRESHOLD:
-                    xyxy = [int(p) for p in box]
-                    if int(cls) == self.PLAYER_CLASS_ID:
+                    # Get box coordinates
+                    xyxy = [int(p) for p in box.xyxy[0]]
+                    # Get class id
+                    cls = int(box.cls.item())
+                    
+                    if cls == self.PLAYER_CLASS_ID:
                         player_boxes.append(xyxy)
-                    elif int(cls) == self.BALL_CLASS_ID:
+                    elif cls == self.BALL_CLASS_ID:
                         ball_boxes.append(xyxy)
 
             # b. Parse Net results
-            for *box, conf, cls in net_preds:
-                if conf > self.CONF_THRESHOLD and int(cls) == self.NET_CLASS_ID:
-                    net_boxes.append([int(p) for p in box])
+            net_results = net_results_list[0] # Get the first result object
+            for box in net_results.boxes:
+                conf = box.conf.item()
+                cls = int(box.cls.item())
+                if conf > self.CONF_THRESHOLD and cls == self.NET_CLASS_ID:
+                    net_boxes.append([int(p) for p in box.xyxy[0]])
 
             # c. Draw Net (Semi-transparent brown) | We do this first so it's "under" the players and court lines
             if net_boxes:
