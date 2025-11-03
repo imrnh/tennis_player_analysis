@@ -1,5 +1,15 @@
 # Tennis Serve Extraction and Analysis 
 
+<!-- ![Demo](bin/project_demonstration.gif) -->
+<center>
+<img src="bin/project_demonstration.gif" alt="Demo" height="400">
+
+or watch the video here: https://youtu.be/53Lz9B7wAYQ
+
+</center>
+
+
+
 ### Extracted the following informations:
 
 From a tennis gameplay video, 

@@ -1,3 +1,4 @@
 bin/data/train_data
 __pycache__/
 **/__pycache__
+bin/presentation
