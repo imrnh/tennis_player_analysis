@@ -22,12 +22,16 @@ From a tennis gameplay video,
 1) Firstly, a ConvNet network was trained to extract 14 marker points in the court. These 14 marker points are then connected as following to build the board:
     $$0 \rightarrow 4 \quad 4 \rightarrow 6 \quad 6 \rightarrow 1 \quad 0 \rightarrow 2 \quad 1 \rightarrow 3 \quad 4 \rightarrow 8 \quad 2 \rightarrow 5 \quad 8 \rightarrow 10 \quad 10 \rightarrow 5 \quad 9 \rightarrow 11 \quad 6 \rightarrow 9 \quad 11 \rightarrow 7 \quad 12 \rightarrow 13 \quad 5 \rightarrow 7 \quad 7 \rightarrow 3 \quad 10 \rightarrow 13  \quad 13 \rightarrow 11 \quad 8 \rightarrow 12 \quad 12 \rightarrow 9$$
     <br><img src="bin/presentation/picture_court_processed.png" width="700"><br><br>
-2) Another YOLO model detects the players, the ball and the net of the game. Net detection is nedded to identify if a server is **Let** or not. **Mediapipe** is used to identify the player pose for each detected players. Also, a *face recognizer ConvNet* has been trained to identify players of both side.
+2) Another YOLO model detects the players, the ball and the net of the game. Net detection is nedded to identify if a server is **Let** or not. **Mediapipe** is used to identify the player pose for each detected players. Also, a *face recognizer ConvNet* has been trained to identify players of both side. 
+
 3) These players will be tracked throughout the match even if they switch side or camera moves to the audience and return back.
-4) For understanding serve type, a **ConvNet + RNN** architecture has been used. Another ConvNet network tracks ball and player trajectory to understand when a serve started and when a serve finished. This ensure that we keep track of only the current recordings of a serve and previous serve data cannot intervine the output of the present serve data. Therefore, it is a gated RNN architecture where a custom game is used with CNN.
 
+4) For understanding serve type, a **ConvNet + Transformer** architecture has been used. Another ConvNet network (Gate Logic) tracks ball and player trajectory to understand when a serve started and when a serve finished. This ensure that we keep track of only the current recordings of a serve and previous serve data cannot intervine the output of the present serve data. Therefore, it is a gated Transformer architecture where a custom gate is used with CNN. This is the complete architecture of the game analysis module made with 2 CNN and 1 transformer network.
 
-
+<center>
+<img src="bin/presentation/tennis_game_analysis_module.png" width="90%">
+<br>Fig: Game analysis module 
+</center>
 
 
 
